@@ -76,7 +76,7 @@ int do_socket(int domain, int type, int protocol){
 
 	return sockfd;}
 
-ProjetReseaux
+
 //init the serv_add structure
 //init_serv_addr()
 
