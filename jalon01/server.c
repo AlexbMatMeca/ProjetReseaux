@@ -6,13 +6,14 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+typedef struct sockaddr_in2 sockaddr_in2;
 
-//struct sockaddr_in {
-//	short sin_family;
-//	u_short sin_port;
-//	struct in_addr sin_addr;
-//	char sa_data[14];
-//};
+struct sockaddr_in2 {
+	short sin_family;
+	u_short sin_port;
+	struct in_addr sin_addr;
+	char sa_data[14];
+};
 
 
 struct sockaddr_in serv_addr;
@@ -41,7 +42,7 @@ int main(int argc, char** argv)
 	init_serv_addr(argv[1], serv_addr);
 
 	struct in_addr addr = serv_addr.sin_addr;
-	do_bind(sock, serv_addr.sin_addr,sizeof(addr));
+	do_bind(sock, (struct sockaddr_in*)&serv_addr,sizeof(serv_addr));
 
 	do_listen(sock, 20, serv_addr.sin_addr,sizeof(addr));
 
@@ -81,14 +82,14 @@ int do_socket(int domain, int type, int protocol){
 //init_serv_addr()
 
 
-int init_serv_addr(const char* port, struct sockaddr_in *serv_addr){
+int init_serv_addr(const char* port, struct sockaddr_in serv_addr){
 
 
 	int portno;
 
 	// clean the serv_add structure
 
-	memset(&serv_addr, 0, sizeof (serv_addr));
+	memset(&serv_addr, 0, sizeof (struct sockaddr_in));
 
 	// cast the port from a string to an int
 
@@ -96,15 +97,15 @@ int init_serv_addr(const char* port, struct sockaddr_in *serv_addr){
 
 	// internet family protocol
 
-	serv_addr->sin_family = AF_INET;
+	serv_addr.sin_family = AF_INET;
 
 	// we bind to any ip form the host
 
-	serv_addr->sin_addr.s_addr = htonl(INADDR_ANY);
+	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	// we bind on the tcp port specified
 
-	serv_addr->sin_port = htons (portno);
+	serv_addr.sin_port = htons (portno);
 
 	return 1;
 }
@@ -117,7 +118,7 @@ int init_serv_addr(const char* port, struct sockaddr_in *serv_addr){
 
 int do_bind(int sock, const struct sockaddr *adr, int adrlen){
 
-	int b = bind(sock, (struct sockaddr *) &adr , sizeof(adr));
+	int b = bind(sock, adr , adrlen);
 
 	if (b == -1){
 		perror("bind");
@@ -146,7 +147,6 @@ int do_listen(int sock, int backlog, const struct sockaddr *adr, int adrlen){
 		//do_accept()
 
 		do_accept(sock, adr, adrlen);
-
 
 		//read what the client has to say
 		//do_read()
