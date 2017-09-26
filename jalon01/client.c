@@ -12,20 +12,19 @@ struct addrinfo* res;
 
 int main(int argc,char** argv)
 {
+
+
     if (argc != 3)
     {
         fprintf(stderr,"usage: RE217_CLIENT hostname port\n");
         return 1;
     }
-
-    int sock = do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    memset(&sock_host, '\0', sizeof(sock_host));
+    do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    memset(& sock_host, '\0', sizeof(sock_host));
     sock_host.sin_family = AF_INET;
-    sock_host.sin_port = htons(4000);
-    inet_aton("127.0.0.1", & sock_host.sin_addr);
-    //printf("%i\n",sock_host.sin_addr);
-    get_addr_info("127.0.0.1",4000,&res);
-    //do_connect(sock, res->ai_addr, sizeof(res->ai_addr));
+    sock_host.sin_port = htons(argv[2]);
+    inet_aton(argv[1], & sock_host.sin_addr);
+    
     return 0;
 }   
    
@@ -75,7 +74,7 @@ int do_socket(int domain, int type, int protocol) {
 //do_connect()
 
 
-int do_connect(int sockfd, struct sockaddr *addr, socklen_t addrlen) {
+void do_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
 	int res = connect(sockfd, addr, addrlen);
 	if (res != 0) {
 		perror("error connection");
