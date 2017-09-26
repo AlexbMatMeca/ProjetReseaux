@@ -7,40 +7,57 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-<<<<<<< HEAD
 struct sockaddr_in sock_host;
-=======
-
->>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
+struct addrinfo* res;
 
 int main(int argc,char** argv)
 {
-
-
     if (argc != 3)
     {
-        fprintf(stderr,"usage: RE217_CLIENT hostname port\n");
+        fprintf(stderr,"usage: RE216_CLIENT hostname port\n");
         return 1;
     }
-    do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+<<<<<<< HEAD
+
+    int sock = do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    memset(&sock_host, '\0', sizeof(sock_host));
+    sock_host.sin_family = AF_INET;
+    sock_host.sin_port = htons(4000);
+    inet_aton("127.0.0.1", & sock_host.sin_addr);
+    //printf("%i\n",sock_host.sin_addr);
+    get_addr_info("127.0.0.1",4000,&res);
+    //do_connect(sock, res->ai_addr, sizeof(res->ai_addr));
+=======
+    int sock = do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     memset(& sock_host, '\0', sizeof(sock_host));
     sock_host.sin_family = AF_INET;
-<<<<<<< HEAD
     sock_host.sin_port = htons(argv[2]);
-=======
-    sock_host.sin_post = htons(port);
->>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
     inet_aton(argv[1], & sock_host.sin_addr);
+    do_connect(sock, argv[2], sizeof(argv[2]));
     
+>>>>>>> 4650ef665a2baca249eb547c79da7e0f04d4b464
     return 0;
 }   
    
 //get address info from the server
 //get_addr_info()
 
+void get_addr_info(const char* address, const char* port, struct addrinfo** res){
+
+	int status;
+    struct addrinfo hints, p;
+
+    memset(&hints,0,sizeof(hints));
+
+    hints.ai_family=AF_INET;
+    hints.ai_socktype=SOCK_STREAM;
+    hints.ai_protocol=0;
+    hints.ai_flags=0;
+
+    status = getaddrinfo(address,port,&hints,res);
 
 
-
+}
 
 //get the socket
 //s = do_socket()
@@ -52,13 +69,10 @@ int do_socket(int domain, int type, int protocol) {
 
 	//check for socket validity
 
-<<<<<<< HEAD
 	if (sockfd == -1){
 			perror("Socket");
 			exit(EXIT_FAILURE);}
 
-=======
->>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
 	// set socket option, to prevent "already in use" issue when rebooting the server right on
 
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
@@ -70,21 +84,20 @@ int do_socket(int domain, int type, int protocol) {
 //connect to remote socket
 //do_connect()
 
-<<<<<<< HEAD
-=======
-	//memset(& sock_host, '\0', sizeof(sock_host));
-	//sock_host.sin_family = AF_INET;
-	//sock_host.sin_post = htons(port);
-	//inet_aton(argv[1], & sock_host.sin_addr);
 
->>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
-
-void do_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
+int do_connect(int sockfd, struct sockaddr *addr, socklen_t addrlen) {
 	int res = connect(sockfd, addr, addrlen);
 	if (res != 0) {
-
+<<<<<<< HEAD
+		perror("error connection");
+		exit(EXIT_FAILURE);
 	}
-
+	return 0;
+=======
+		printf("Unable to find server socket\n");
+	}
+	
+>>>>>>> 4650ef665a2baca249eb547c79da7e0f04d4b464
 }
 
 
@@ -92,27 +105,16 @@ void do_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
 //get user input
 //readline()
 void readline(){
-
+	
 }
 
 
 //send message to the server
 //handle_client_message()
-<<<<<<< HEAD
 void handle_client_message(int sockfd){
-=======
-void handle_client_message(){
->>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
 	int message = 1;
 	int *ptr = &message;
 	send(sockfd, ptr, 1, 0);
 }
 
 
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
