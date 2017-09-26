@@ -18,12 +18,12 @@ int main(int argc,char** argv)
         fprintf(stderr,"usage: RE216_CLIENT hostname port\n");
         return 1;
     }
-    do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    int sock = do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     memset(& sock_host, '\0', sizeof(sock_host));
     sock_host.sin_family = AF_INET;
     sock_host.sin_port = htons(argv[2]);
     inet_aton(argv[1], & sock_host.sin_addr);
-    do_connect(do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP), argv[2], sizeof(argv[2]));
+    do_connect(sock, argv[2], sizeof(argv[2]));
     
     return 0;
 }   
@@ -66,7 +66,7 @@ void do_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
 	if (res != 0) {
 		printf("Unable to find server socket\n");
 	}
-
+	
 }
 
 
@@ -74,7 +74,7 @@ void do_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
 //get user input
 //readline()
 void readline(){
-
+	
 }
 
 
