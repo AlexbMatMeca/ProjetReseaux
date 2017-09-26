@@ -8,31 +8,46 @@
 #include <netdb.h>
 
 struct sockaddr_in sock_host;
+struct addrinfo* res;
 
 int main(int argc,char** argv)
 {
-
-
     if (argc != 3)
     {
         fprintf(stderr,"usage: RE217_CLIENT hostname port\n");
         return 1;
     }
-    do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    memset(& sock_host, '\0', sizeof(sock_host));
+
+    int sock = do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    memset(&sock_host, '\0', sizeof(sock_host));
     sock_host.sin_family = AF_INET;
-    sock_host.sin_port = htons(argv[2]);
-    inet_aton(argv[1], & sock_host.sin_addr);
-    
+    sock_host.sin_port = htons(4000);
+    inet_aton("127.0.0.1", & sock_host.sin_addr);
+    //printf("%i\n",sock_host.sin_addr);
+    get_addr_info("127.0.0.1",4000,&res);
+    //do_connect(sock, res->ai_addr, sizeof(res->ai_addr));
     return 0;
 }   
    
 //get address info from the server
 //get_addr_info()
 
+void get_addr_info(const char* address, const char* port, struct addrinfo** res){
+
+	int status;
+    struct addrinfo hints, p;
+
+    memset(&hints,0,sizeof(hints));
+
+    hints.ai_family=AF_INET;
+    hints.ai_socktype=SOCK_STREAM;
+    hints.ai_protocol=0;
+    hints.ai_flags=0;
+
+    status = getaddrinfo(address,port,&hints,res);
 
 
-
+}
 
 //get the socket
 //s = do_socket()
@@ -60,12 +75,13 @@ int do_socket(int domain, int type, int protocol) {
 //do_connect()
 
 
-void do_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
+int do_connect(int sockfd, struct sockaddr *addr, socklen_t addrlen) {
 	int res = connect(sockfd, addr, addrlen);
 	if (res != 0) {
-
+		perror("error connection");
+		exit(EXIT_FAILURE);
 	}
-
+	return 0;
 }
 
 

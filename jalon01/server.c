@@ -6,18 +6,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
-typedef struct sockaddr_in2 sockaddr_in2;
-
-struct sockaddr_in2 {
-	short sin_family;
-	u_short sin_port;
-	struct in_addr sin_addr;
-	char sa_data[14];
-};
-
 
 struct sockaddr_in serv_addr;
-
 
 
 void error(const char *msg)
@@ -39,12 +29,16 @@ int main(int argc, char** argv)
 
 	int sock = do_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	init_serv_addr(argv[1], serv_addr);
+	init_serv_addr(4000, serv_addr);
 
 	struct in_addr addr = serv_addr.sin_addr;
-	do_bind(sock, (struct sockaddr_in*)&serv_addr,sizeof(serv_addr));
+
+	do_bind(sock, (struct sockaddr *)&serv_addr,sizeof(serv_addr));
+
+	//printf("%i\n",(serv_addr.sin_addr.s_addr));
 
 	do_listen(sock, 20, serv_addr.sin_addr,sizeof(addr));
+
 
 	return 0;
 }
@@ -69,7 +63,6 @@ int do_socket(int domain, int type, int protocol){
 		perror("Socket");
 		exit(EXIT_FAILURE);}
 
-
 	// set socket option, to prevent "already in use" issue when rebooting the server right on
 
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
@@ -82,17 +75,18 @@ int do_socket(int domain, int type, int protocol){
 //init_serv_addr()
 
 
-int init_serv_addr(const char* port, struct sockaddr_in serv_addr){
+void init_serv_addr(const char* port, struct sockaddr_in serv_addr){
 
 
 	int portno;
 
 	// clean the serv_add structure
 
-	memset(&serv_addr, 0, sizeof (struct sockaddr_in));
+	memset(&serv_addr, 0, sizeof (serv_addr));
 
 	// cast the port from a string to an int
 
+	int portno2 = atoi(port);
 	portno = 4000;
 
 	// internet family protocol
@@ -104,10 +98,8 @@ int init_serv_addr(const char* port, struct sockaddr_in serv_addr){
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	// we bind on the tcp port specified
+	serv_addr.sin_port = htons(portno);
 
-	serv_addr.sin_port = htons (portno);
-
-	return 1;
 }
 
 
@@ -132,7 +124,6 @@ int do_bind(int sock, const struct sockaddr *adr, int adrlen){
 
 int do_listen(int sock, int backlog, const struct sockaddr *adr, int adrlen){
 
-
 	int l = listen(sock, backlog);
 
 	if (l == -1){
@@ -151,33 +142,37 @@ int do_listen(int sock, int backlog, const struct sockaddr *adr, int adrlen){
 		//read what the client has to say
 		//do_read()
 
-		char ptr = NULL;
-		ptr = 'a';
-		do_read(sock, ptr, 1);
+		//char ptr = NULL;
+		//ptr = 'a';
+		//do_read(sock, ptr, 1);
 		//we write back to the client
 		//do_write()
-		do_write(sock, ptr,1);
+		//do_write(sock, ptr,1);
+
 
 	}
 
 	//clean up server socket
-	return l;
+	return sock;
 }
 
 
 int do_accept(int socket, struct sockaddr* addr, socklen_t* addrlen){
 	int a = accept(socket, addr, addrlen);
+
 	if (a == -1){
 		perror("listen");
 		exit(EXIT_FAILURE);
 	}
+
 	return a;
 
 }
 
 int do_read(int sockfd, char* buf, int len){
 
-	int r = read(sockfd, buf, len);
+	int r = 10;
+	//&r = read(sockfd, buf, len);
 
 	if (r == -1){
 		perror("listen");
@@ -188,12 +183,12 @@ int do_read(int sockfd, char* buf, int len){
 
 int do_write(int fd, const void *buf, size_t count){
 
-	int w = write(fd, buf, count);
+	write(fd, buf, count);
 
 	if (write(fd, buf, count) == -1){
-		perror("listen");
+		perror("write");
 		exit(EXIT_FAILURE);
 	}
-	return w;
+	return 1;
 }
 
