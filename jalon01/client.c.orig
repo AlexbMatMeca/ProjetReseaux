@@ -11,7 +11,7 @@
 struct sockaddr_in sock_host;
 =======
 
->>>>>>> 2c3ae288631ac50c41e7a44841751602234086cb
+>>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
 
 int main(int argc,char** argv)
 {
@@ -29,7 +29,7 @@ int main(int argc,char** argv)
     sock_host.sin_port = htons(argv[2]);
 =======
     sock_host.sin_post = htons(port);
->>>>>>> 2c3ae288631ac50c41e7a44841751602234086cb
+>>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
     inet_aton(argv[1], & sock_host.sin_addr);
     
     return 0;
@@ -58,7 +58,7 @@ int do_socket(int domain, int type, int protocol) {
 			exit(EXIT_FAILURE);}
 
 =======
->>>>>>> 2c3ae288631ac50c41e7a44841751602234086cb
+>>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
 	// set socket option, to prevent "already in use" issue when rebooting the server right on
 
 	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
@@ -77,7 +77,7 @@ int do_socket(int domain, int type, int protocol) {
 	//sock_host.sin_post = htons(port);
 	//inet_aton(argv[1], & sock_host.sin_addr);
 
->>>>>>> 2c3ae288631ac50c41e7a44841751602234086cb
+>>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
 
 void do_connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
 	int res = connect(sockfd, addr, addrlen);
@@ -102,7 +102,7 @@ void readline(){
 void handle_client_message(int sockfd){
 =======
 void handle_client_message(){
->>>>>>> 2c3ae288631ac50c41e7a44841751602234086cb
+>>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
 	int message = 1;
 	int *ptr = &message;
 	send(sockfd, ptr, 1, 0);
@@ -115,4 +115,4 @@ void handle_client_message(){
 
 
 
->>>>>>> 2c3ae288631ac50c41e7a44841751602234086cb
+>>>>>>> cac8d3f9c6b3d0dd20f6cf6e8fd73311f0a9d7df
